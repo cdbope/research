@@ -1,0 +1,94 @@
+# Data files - large genomics files
+*.bam
+*.bam.bai
+*.fastq
+*.fastq.gz
+*.fq.gz
+*.bed.gz
+*.vcf
+*.vcf.gz
+*.bcf
+*.sam
+*.cram
+*.bedmethyl.gz
+
+# Large reference/data files
+*.csv
+*.tsv
+*.xlsx
+*.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+*.egg-info/
+.eggs/
+*.egg
+
+# Nextflow
+.nextflow/
+.nextflow.log*
+work/
+results/
+
+# System files
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.temp
+
+# Large model files
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.onnx
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env
+*.env
+venv/
+env/
+# Embedded git repos (add as submodules if needed)
+MethyLYZR/
+pori/
+severus/Severus/
+svmeta/tools/SURVIVOR/
+
+# Large files (>5MB)
+*.zip
+*.idat
+*.so
+*.so.*
+*.pack
+*.xlsx
+*.ipynb
+*.vcf
+*.pdf
+*.RData
+*.csv.gz
+*.bed
+deepsomatic/output/
+severus/output/
+severus/PoN_*.gz
+drexler/epigenetic-neural-glioblastoma-main/code/work/
+drexler/epigenetic-neural-glioblastoma-main/code/example_neural_classification/
+drexler/epigenetic-neural-glioblastoma-main/code/WGCNA_proteomics/data/
+drexler/epigenetic-neural-glioblastoma-main/code/probe_coordinates_450k_hg38.csv
+
+# Specific large files
+drexler/epigenetic-neural-glioblastoma-main/code/DNAm_deconv/full_atlas.csv.gz
+drexler/epigenetic-neural-glioblastoma-main/code/DNAm_deconv/meth_atlas-master/T24-081_48hr_mnpflex_input.bed
+drexler/epigenetic-neural-glioblastoma-main/code/DNAm_deconv/meth_atlas-master/full_atlas.csv.gz
+drexler/epigenetic-neural-glioblastoma-main/code/DNAm_deconv/meth_atlas-master/pre_process/ref_sample.RData
+drexler/epigenetic-neural-glioblastoma-main/code/DNAm_deconv/ref_sample.RData
+svmeta/npae082.pdf

@@ -1,0 +1,13 @@
+LOW VAF SENSITIVITY REPORT
+================================================================================
+
+Winner: Clair3/ClairS-TO
+
+DeepSomatic minimum VAF: 31.82%
+Clair3/ClairS-TO minimum VAF: 20.00%
+
+DeepSomatic low VAF variants (< 10%): 0
+Clair3/ClairS-TO low VAF variants (< 10%): 0
+
+DeepSomatic low VAF in cancer genes: 0
+Clair3/ClairS-TO low VAF in cancer genes: 0

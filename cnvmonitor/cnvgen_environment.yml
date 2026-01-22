@@ -1,0 +1,74 @@
+name: cnvgen
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+
+dependencies:
+  # Python
+  - python=3.9
+
+  # CNVpytor and core dependencies
+  - cnvpytor
+
+  # Genomics tools
+  - samtools
+  - bedtools
+  - htslib
+  - pysam
+
+  # Python scientific stack
+  - numpy
+  - scipy
+  - pandas
+  - matplotlib
+  - seaborn
+
+  # Bioinformatics libraries
+  - biopython
+  - pyvcf3
+
+  # Data processing
+  - h5py
+  - pytables
+
+  # R and plotting packages
+  - r-base=4.3
+  - r-ggplot2
+  - r-dplyr
+  - r-tidyr
+  - r-data.table
+  - r-cowplot
+  - r-viridis
+  - r-gridextra
+  - r-scales
+  - r-rcolorbrewer
+  - r-optparse
+  - r-ggpubr
+  - r-reshape2
+
+  # Bioconductor packages
+  - bioconductor-genomicranges
+  - bioconductor-genomeinfodb
+  - bioconductor-rtracklayer
+  - bioconductor-biostrings
+  - bioconductor-genomicalignments
+
+  # Utilities
+  - parallel
+  - pigz
+  - gzip
+  - curl
+  - wget
+
+  # For plotting and visualization
+  - plotly
+
+  # Additional utilities
+  - pip
+  - setuptools
+  - wheel
+
+  # Pip packages (if needed)
+  - pip:
+    - pygenometracks

@@ -1,0 +1,82 @@
+#!/bin/bash
+###############################################################################
+# Step 2: Merge VCFs across samples using SURVIVOR
+#
+# This creates a cohort-level merged SV catalog where similar SVs across
+# samples are clustered into meta-events.
+#
+# Usage: ./02_merge_with_survivor.sh
+###############################################################################
+
+set -e
+
+# Configuration
+NORMALIZED_VCF_DIR="results/normalized_vcfs"
+OUTPUT_DIR="results/merged"
+SURVIVOR_BIN="SURVIVOR"  # Assumes SURVIVOR is in PATH
+
+# SURVIVOR parameters
+MAX_DIST=1000          # Maximum distance between SVs to merge (bp)
+MIN_SUPPORT=1          # Minimum number of samples
+TYPE_MATCH=1           # Require same SV type (1=yes)
+STRAND_MATCH=0         # Require same strand (0=no)
+SIZE_SIMILARITY=0.3    # Size similarity threshold
+MIN_SIZE=50            # Minimum SV size (bp)
+
+# Create output directory
+mkdir -p "$OUTPUT_DIR"
+
+echo "============================================================================"
+echo "STEP 2: SURVIVOR MERGE"
+echo "============================================================================"
+echo "Input: $NORMALIZED_VCF_DIR"
+echo "Output: $OUTPUT_DIR"
+echo "============================================================================"
+echo "Parameters:"
+echo "  Max distance: ${MAX_DIST}bp"
+echo "  Min support: $MIN_SUPPORT samples"
+echo "  Type match: $TYPE_MATCH"
+echo "  Size similarity: $SIZE_SIMILARITY"
+echo "============================================================================"
+echo
+
+# Create list of VCF files
+VCF_LIST="$OUTPUT_DIR/vcf_list.txt"
+ls "$NORMALIZED_VCF_DIR"/*.norm.vcf.gz > "$VCF_LIST"
+
+n_vcfs=$(cat "$VCF_LIST" | wc -l)
+echo "Found $n_vcfs VCF files to merge"
+echo
+
+# Run SURVIVOR merge
+echo "Running SURVIVOR merge..."
+$SURVIVOR_BIN merge \
+    "$VCF_LIST" \
+    "$MAX_DIST" \
+    "$MIN_SUPPORT" \
+    "$TYPE_MATCH" \
+    "$STRAND_MATCH" \
+    "$SIZE_SIMILARITY" \
+    "$MIN_SIZE" \
+    "$OUTPUT_DIR/merged_SV.vcf"
+
+echo "✓ SURVIVOR merge complete"
+echo
+
+# Compress and index merged VCF
+echo "Compressing and indexing merged VCF..."
+bgzip -c "$OUTPUT_DIR/merged_SV.vcf" > "$OUTPUT_DIR/merged_SV.vcf.gz"
+bcftools index "$OUTPUT_DIR/merged_SV.vcf.gz"
+
+echo "✓ Merged VCF ready: $OUTPUT_DIR/merged_SV.vcf.gz"
+
+# Quick stats
+echo
+echo "Quick statistics:"
+bcftools stats "$OUTPUT_DIR/merged_SV.vcf.gz" | grep "^SN" | grep "number of"
+
+echo
+echo "============================================================================"
+echo "SURVIVOR merge complete!"
+echo "Merged VCF: $OUTPUT_DIR/merged_SV.vcf.gz"
+echo "============================================================================"

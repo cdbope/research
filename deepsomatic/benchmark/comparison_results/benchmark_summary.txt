@@ -1,0 +1,10 @@
+BENCHMARK COMPARISON SUMMARY
+================================================================================
+
+Samples analyzed: 13
+Winner: DeepSomatic
+Score: 7-0
+
+DeepSomatic total variants: 66
+ClairS-TO total variants: 33
+Average concordance: 43.5%

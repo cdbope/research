@@ -1,0 +1,53 @@
+================================================================================
+STRUCTURAL VARIANT ANALYSIS REPORT - GBM SAMPLES
+================================================================================
+
+1. SAMPLE SUMMARY
+--------------------------------------------------------------------------------
+Total samples analyzed: 8
+Sample IDs: KM21_566, KM21_587, KM21_632, T18-020, T18-021, T18-022, T18-023, T18-024
+
+2. SV COUNTS SUMMARY
+--------------------------------------------------------------------------------
+DEL: Total=124932, Mean=15616.5
+DUP: Total=323, Mean=40.4
+INV: Total=550, Mean=68.8
+BND: Total=592, Mean=74.0
+INS: Total=153379, Mean=19172.4
+
+3. PURITY AND VAF SUMMARY
+--------------------------------------------------------------------------------
+Purity Range: 0.50 - 0.91
+Mean Purity: 0.72
+Mean VAF (All) Range: 0.632 - 0.675
+Mean VAF (HQ) Range: 0.686 - 0.725
+Overall Mean VAF (HQ): 0.705
+Average Clonal Fraction: 0.902
+
+4. CLUSTERING RESULTS
+--------------------------------------------------------------------------------
+
+Cluster 1:
+  Samples: KM21_566, T18-020, T18-021, T18-022, T18-024
+  Mean Purity: 0.81
+  Mean Total SVs: 35803.4
+  Mean VAF (HQ): 0.702
+  Mean Clonal Fraction: 0.894
+
+Cluster 2:
+  Samples: KM21_587, KM21_632
+  Mean Purity: 0.57
+  Mean Total SVs: 33232.5
+  Mean VAF (HQ): 0.701
+  Mean Clonal Fraction: 0.929
+
+Cluster 3:
+  Samples: T18-023
+  Mean Purity: 0.52
+  Mean Total SVs: 34294.0
+  Mean VAF (HQ): 0.725
+  Mean Clonal Fraction: 0.889
+
+================================================================================
+Analysis complete. See generated plots and tables for details.
+================================================================================

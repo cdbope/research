@@ -1,0 +1,321 @@
+═══════════════════════════════════════════════════════════════════════════════
+ONT TIME-SERIES CNV ANALYSIS PIPELINE - SUMMARY
+═══════════════════════════════════════════════════════════════════════════════
+
+Created: 2025-10-14
+Location: /home/chbope/extension/script/
+
+═══════════════════════════════════════════════════════════════════════════════
+OVERVIEW
+═══════════════════════════════════════════════════════════════════════════════
+
+This pipeline provides a complete solution for analyzing Copy Number Variations
+(CNVs) from Oxford Nanopore Technology (ONT) sequencing data generated at
+intervals. It uses CNVpytor for fast, accurate CNV detection from long-read data.
+
+Key Features:
+✓ Automatic monitoring of directories for new BAM files
+✓ Individual BAM CNV analysis using CNVpytor (multiple bin sizes)
+✓ Time-series visualization showing CNV evolution
+✓ Combined analysis identifying persistent/emerging/transient CNVs
+✓ Comprehensive reports and publication-quality figures
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES CREATED
+═══════════════════════════════════════════════════════════════════════════════
+
+1. ENVIRONMENT CONFIGURATION
+   cnvgen_environment.yml
+   └─ Conda environment with CNVpytor, R, and all dependencies
+
+2. CORE SCRIPTS
+   ont_process_individual_bam_cnv.sh
+   └─ Process single BAM file for CNV analysis
+
+   ont_timeseries_cnv_visualization.R
+   └─ Generate time-series CNV visualizations
+
+   ont_combined_cnv_analysis.R
+   └─ Perform comprehensive CNV analysis across timepoints
+
+   ont_timeseries_cnv_monitor.sh
+   └─ Main orchestration script for continuous monitoring
+
+3. USER INTERFACE
+   ont_cnv_quickstart.sh
+   └─ Interactive menu for easy pipeline usage
+
+4. DOCUMENTATION
+   ONT_TIMESERIES_CNV_README.md
+   └─ Comprehensive documentation with examples
+
+   ONT_CNV_PIPELINE_SUMMARY.txt
+   └─ This file
+
+═══════════════════════════════════════════════════════════════════════════════
+QUICK START
+═══════════════════════════════════════════════════════════════════════════════
+
+1. SETUP (First time only)
+
+   # Create conda environment (may take 10-30 minutes)
+   conda env create -f cnvgen_environment.yml
+
+   # Activate environment
+   conda activate cnvgen
+
+   # Verify installation
+   cnvpytor --version
+   samtools --version
+
+2. RUN PIPELINE
+
+   Option A: Interactive Menu
+   ─────────────────────────
+   ./ont_cnv_quickstart.sh
+
+   Option B: Continuous Monitoring (Real-time analysis)
+   ────────────────────────────────────────────────────
+   ./ont_timeseries_cnv_monitor.sh \
+     -i /path/to/bam_directory \
+     -o /path/to/output \
+     -r /path/to/reference.fa \
+     -s SAMPLE_ID \
+     -c 300 \
+     -t 4
+
+   Option C: Batch Processing (Process existing BAMs once)
+   ────────────────────────────────────────────────────────
+   ./ont_timeseries_cnv_monitor.sh \
+     -i /path/to/bam_directory \
+     -o /path/to/output \
+     -r /path/to/reference.fa \
+     -s SAMPLE_ID \
+     --no-continuous \
+     -t 8
+
+3. VIEW RESULTS
+
+   Output Directory Structure:
+   output_directory/
+   ├── individual_bams/     # Individual timepoint analyses
+   ├── timeseries_plots/    # Time-series visualizations
+   ├── combined_analysis/   # Cross-timepoint analysis
+   └── logs/                # Processing logs
+
+═══════════════════════════════════════════════════════════════════════════════
+PIPELINE WORKFLOW
+═══════════════════════════════════════════════════════════════════════════════
+
+1. MONITORING
+   ├─ Continuously checks input directory for new BAM files
+   ├─ Validates BAM files (size, index)
+   └─ Tracks processed files to avoid reprocessing
+
+2. INDIVIDUAL BAM PROCESSING (per BAM)
+   ├─ Import read depth with CNVpytor
+   ├─ Generate histograms for multiple bin sizes
+   ├─ Partition genome and call CNVs
+   ├─ Export VCF and TSV formats
+   ├─ Generate Manhattan plots
+   └─ Create summary statistics
+
+3. TIME-SERIES VISUALIZATION (after each new BAM)
+   ├─ Aggregate data from all processed timepoints
+   ├─ Generate CNV count over time plot
+   ├─ Create genome-wide CNV heatmap
+   ├─ Plot per-chromosome CNV profiles
+   └─ Show CNV size distributions
+
+4. COMBINED ANALYSIS (after each new BAM)
+   ├─ Match CNVs across timepoints
+   ├─ Classify as persistent/emerging/transient
+   ├─ Map persistent CNV regions
+   ├─ Track CNV evolution
+   └─ Generate comprehensive reports
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FILES
+═══════════════════════════════════════════════════════════════════════════════
+
+INDIVIDUAL BAM OUTPUTS (per timepoint):
+├─ *.pytor                        CNVpytor data file
+├─ *_1000bp.vcf                   High-resolution CNV calls
+├─ *_10000bp.vcf                  Medium-resolution CNV calls
+├─ *_100000bp.vcf                 Low-resolution CNV calls
+├─ *_cnv_calls.tsv                Tab-separated CNV calls
+├─ *_manhattan_*.png              Manhattan plots
+├─ *_summary.txt                  Summary statistics
+└─ *_metadata.json                Metadata with timestamps
+
+TIME-SERIES OUTPUTS:
+├─ *_cnv_count_timeseries.png     CNV counts over time
+├─ *_genome_wide_cnv_heatmap.png  Genome-wide heatmap
+├─ *_per_chromosome_cnv.png       Per-chromosome profiles
+├─ *_cnv_size_distribution.png    Size distributions
+└─ *_timeseries_summary.txt       Summary report
+
+COMBINED ANALYSIS OUTPUTS:
+├─ *_cnv_classification.png       CNV classification plot
+├─ *_persistent_cnv_map.png       Persistent CNV regions
+├─ *_cnv_evolution_tracking.png   CNV evolution heatmap
+├─ *_cnv_classification.csv       Classification table
+├─ *_persistent_cnvs.csv          Persistent CNV list
+└─ *_combined_analysis_summary.txt Summary report
+
+═══════════════════════════════════════════════════════════════════════════════
+CNV CLASSIFICATIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+PERSISTENT CNVs
+├─ Present in ALL timepoints
+├─ Likely germline or early somatic events
+└─ Stable genomic alterations
+
+EMERGING CNVs
+├─ Present in MULTIPLE (but not all) timepoints
+├─ Potential clonal evolution events
+└─ Progressive genomic changes
+
+TRANSIENT CNVs
+├─ Present in ONLY ONE timepoint
+├─ Possible technical artifacts or transient events
+└─ Require additional validation
+
+═══════════════════════════════════════════════════════════════════════════════
+PERFORMANCE NOTES
+═══════════════════════════════════════════════════════════════════════════════
+
+PROCESSING TIME (per BAM):
+├─ Small BAM (<5 GB):    ~5-10 minutes
+├─ Medium BAM (5-20 GB): ~15-30 minutes
+└─ Large BAM (>20 GB):   ~30-60 minutes
+
+MEMORY REQUIREMENTS:
+├─ CNVpytor: ~2-4 GB per BAM
+├─ R scripts: ~1-2 GB
+└─ Recommended: 8-16 GB total RAM
+
+DISK SPACE:
+├─ CNVpytor files: ~10-50% of BAM size
+├─ VCF files: ~1-10 MB each
+├─ Plots: ~1-5 MB each
+└─ Total: ~50-100% of total BAM size
+
+═══════════════════════════════════════════════════════════════════════════════
+USE CASES
+═══════════════════════════════════════════════════════════════════════════════
+
+1. REAL-TIME MONITORING
+   └─ Monitor BAM files as they're generated during sequencing
+   └─ Track CNV changes in real-time
+   └─ Detect emerging alterations early
+
+2. RETROSPECTIVE ANALYSIS
+   └─ Process historical BAM files
+   └─ Analyze CNV evolution over time
+   └─ Identify persistent genomic changes
+
+3. COMPARATIVE ANALYSIS
+   └─ Compare CNV profiles across timepoints
+   └─ Identify clonal evolution patterns
+   └─ Validate CNV calls across replicates
+
+═══════════════════════════════════════════════════════════════════════════════
+CUSTOMIZATION
+═══════════════════════════════════════════════════════════════════════════════
+
+BIN SIZES
+├─ Default: "1000 10000 100000"
+├─ High-resolution: "1000 5000 10000"
+└─ Low-resolution: "50000 100000"
+
+CHECK INTERVAL
+├─ Fast sequencing: 300 seconds (5 minutes)
+└─ Slow sequencing: 1800 seconds (30 minutes)
+
+OVERLAP THRESHOLD (CNV matching)
+├─ Strict: 0.8
+├─ Default: 0.5
+└─ Lenient: 0.3
+
+═══════════════════════════════════════════════════════════════════════════════
+TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════════
+
+ISSUE: CNVpytor not found
+FIX: conda activate cnvgen
+
+ISSUE: BAM index missing
+FIX: samtools index your_file.bam
+
+ISSUE: R package errors
+FIX: conda install -c conda-forge r-ggplot2
+
+ISSUE: No CNV calls generated
+CHECK: BAM quality, coverage, bin sizes
+
+ISSUE: Time-series plots not generating
+CHECK: Need at least 2 timepoints for time-series
+
+═══════════════════════════════════════════════════════════════════════════════
+EXAMPLE COMMANDS
+═══════════════════════════════════════════════════════════════════════════════
+
+# Real-time monitoring with 10-minute intervals
+./ont_timeseries_cnv_monitor.sh \
+  -i /data/ont_sequencing/bam_output \
+  -o /data/analysis/CNV_timeseries \
+  -r /reference/hg38.fa \
+  -s PATIENT_001 \
+  -c 600 \
+  --bin-sizes "10000 100000" \
+  -t 8
+
+# Batch process existing BAMs
+./ont_timeseries_cnv_monitor.sh \
+  -i /data/historical_bams \
+  -o /data/retrospective_analysis \
+  -r /reference/hg38.fa \
+  -s STUDY_SAMPLE_A \
+  --no-continuous \
+  -t 16
+
+# Process single BAM manually
+./ont_process_individual_bam_cnv.sh \
+  -b sample_timepoint1.bam \
+  -o ./cnv_output \
+  -r hg38.fa \
+  -s SAMPLE_T1
+
+# Generate time-series plots only
+Rscript ont_timeseries_cnv_visualization.R \
+  --input-dir ./cnv_output/individual_bams \
+  --output-dir ./plots \
+  --sample-id SAMPLE
+
+# Generate combined analysis only
+Rscript ont_combined_cnv_analysis.R \
+  --input-dir ./cnv_output/individual_bams \
+  --output-dir ./combined \
+  --sample-id SAMPLE
+
+═══════════════════════════════════════════════════════════════════════════════
+REFERENCES
+═══════════════════════════════════════════════════════════════════════════════
+
+CNVpytor: https://github.com/abyzovlab/CNVpytor
+Samtools: http://www.htslib.org/
+ggplot2: https://ggplot2.tidyverse.org/
+
+═══════════════════════════════════════════════════════════════════════════════
+NEXT STEPS
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Wait for conda environment creation to complete
+2. Run: conda activate cnvgen
+3. Test with your BAM files
+4. Review ONT_TIMESERIES_CNV_README.md for detailed documentation
+5. Use ont_cnv_quickstart.sh for interactive usage
+
+═══════════════════════════════════════════════════════════════════════════════

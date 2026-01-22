@@ -1,0 +1,19 @@
+GBM Neural Signature Threshold
+==============================
+
+Following Drexler et al. (Nature Medicine 2024) approach:
+'The combined dataset was dichotomized into low- and high-neural
+tumors using the median neural proportion.'
+
+Dataset: 219 GBM samples
+
+Statistics:
+  Mean: 0.2313
+  Median (threshold): 0.2290
+  Std: 0.1485
+  Min: 0.0000
+  Max: 0.7650
+
+Classification rule:
+  High-Neural: Cortical_neurons >= 0.2290
+  Low-Neural:  Cortical_neurons < 0.2290

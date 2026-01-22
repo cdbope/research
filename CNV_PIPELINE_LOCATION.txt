@@ -1,0 +1,43 @@
+═══════════════════════════════════════════════════════════════════════════════
+ONT TIME-SERIES CNV ANALYSIS PIPELINE
+═══════════════════════════════════════════════════════════════════════════════
+
+The complete CNV monitoring pipeline has been organized in:
+
+    📁 /home/chbope/extension/script/cnvmonitor/
+
+═══════════════════════════════════════════════════════════════════════════════
+QUICK START
+═══════════════════════════════════════════════════════════════════════════════
+
+cd /home/chbope/extension/script/cnvmonitor/
+
+# Read the documentation
+cat README.md
+less ONT_TIMESERIES_CNV_README.md
+
+# Setup environment (first time only)
+conda env create -f cnvgen_environment.yml
+conda activate cnvgen
+
+# Run interactive menu
+./ont_cnv_quickstart.sh
+
+═══════════════════════════════════════════════════════════════════════════════
+PIPELINE FILES IN cnvmonitor/
+═══════════════════════════════════════════════════════════════════════════════
+
+Configuration:
+├─ cnvgen_environment.yml              Conda environment
+├─ README.md                           Quick start guide
+├─ ONT_TIMESERIES_CNV_README.md       Full documentation
+└─ ONT_CNV_PIPELINE_SUMMARY.txt       Reference guide
+
+Scripts:
+├─ ont_timeseries_cnv_monitor.sh      Main orchestration (monitoring)
+├─ ont_process_individual_bam_cnv.sh  Individual BAM processing
+├─ ont_timeseries_cnv_visualization.R Time-series plots
+├─ ont_combined_cnv_analysis.R        Combined analysis
+└─ ont_cnv_quickstart.sh              Interactive menu
+
+═══════════════════════════════════════════════════════════════════════════════

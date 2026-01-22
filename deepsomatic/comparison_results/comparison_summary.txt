@@ -1,0 +1,9 @@
+VARIANT CALLER COMPARISON SUMMARY
+======================================================================
+
+DeepSomatic variants: 9
+Clair3/ClairS-TO variants: 14
+Shared variants: 2
+DeepSomatic only: 7
+Clair3/ClairS-TO only: 12
+Concordance rate: 9.52%

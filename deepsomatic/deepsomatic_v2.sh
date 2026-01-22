@@ -1,0 +1,132 @@
+#!/bin/bash
+
+# Load configuration
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONFIG_FILE="${SCRIPT_DIR}/config.sh"
+
+if [ -f "$CONFIG_FILE" ]; then
+    echo "Loading configuration from ${CONFIG_FILE}..."
+    source "$CONFIG_FILE"
+else
+    echo "Error: Configuration file not found at ${CONFIG_FILE}"
+    echo "Please create config.sh with required settings"
+    exit 1
+fi
+
+# Validate required paths
+if [ "${ANNOVAR_DIR}" == "/path/to/annovar" ] || [ "${HUMANDB_DIR}" == "/path/to/annovar/humandb" ]; then
+    echo "Error: Please update ANNOVAR paths in ${CONFIG_FILE}"
+    exit 1
+fi
+
+if [ ! -d "${ANNOVAR_DIR}" ]; then
+    echo "Error: ANNOVAR directory not found: ${ANNOVAR_DIR}"
+    exit 1
+fi
+
+if [ ! -f "${ANNOVAR_DIR}/convert2annovar.pl" ]; then
+    echo "Error: convert2annovar.pl not found in ${ANNOVAR_DIR}"
+    exit 1
+fi
+
+# Clean up any previous intermediate files to avoid corruption
+echo "Cleaning up previous intermediate files..."
+sudo rm -rf ${OUTPUT_DIR}/intermediate_results_dir/*
+
+# Check if Docker image exists locally
+echo "Checking DeepSomatic Docker image..."
+if ! sudo docker image inspect google/deepsomatic:"${BIN_VERSION}" > /dev/null 2>&1; then
+    echo "Image not found locally. Pulling DeepSomatic Docker image..."
+    sudo docker pull google/deepsomatic:"${BIN_VERSION}"
+else
+    echo "DeepSomatic image ${BIN_VERSION} found locally. Skipping pull."
+fi
+
+echo "Running DeepSomatic variant calling..."
+sudo docker run \
+-v "${INPUT_DIR}":"${INPUT_DIR}":ro \
+-v "${OUTPUT_DIR}":"${OUTPUT_DIR}" \
+-v "${REF_DIR}":"${REF_DIR}":ro \
+google/deepsomatic:"${BIN_VERSION}" \
+run_deepsomatic \
+--model_type=${MODEL_TYPE} \
+--ref="${REF_DIR}/${REF_GENOME}" \
+--reads_tumor="${INPUT_DIR}/${BAM_FILE}" \
+--output_vcf="${OUTPUT_DIR}/${SAMPLE_ID}_ont_deepsomatic_output.vcf.gz" \
+--sample_name_tumor="${SAMPLE_ID}" \
+--num_shards=${NUM_SHARDS} \
+--logging_dir="${OUTPUT_DIR}/logs" \
+--intermediate_results_dir="${OUTPUT_DIR}/intermediate_results_dir" \
+--use_default_pon_filtering=${USE_PON_FILTERING}
+
+# Check if DeepSomatic completed successfully
+if [ $? -ne 0 ]; then
+    echo "Error: DeepSomatic variant calling failed"
+    exit 1
+fi
+
+echo "DeepSomatic variant calling completed successfully"
+
+# Navigate to output directory for annotation
+cd ${OUTPUT_DIR}
+
+echo "Filtering VCF for PASS variants only..."
+bcftools view -f PASS -O z -o ${SAMPLE_ID}_ont_deepsomatic_output.pass.vcf.gz ${SAMPLE_ID}_ont_deepsomatic_output.vcf.gz
+
+# Check if filtered VCF was created
+if [ ! -f ${SAMPLE_ID}_ont_deepsomatic_output.pass.vcf.gz ]; then
+    echo "Error: Failed to create filtered VCF"
+    exit 1
+fi
+
+echo "Converting VCF to ANNOVAR input format..."
+${ANNOVAR_DIR}/convert2annovar.pl ${SAMPLE_ID}_ont_deepsomatic_output.pass.vcf.gz \
+  --format vcf4 \
+  --filter pass \
+  --includeinfo \
+  --outfile deepsomatic_To_snv_avinput
+
+# Check if conversion was successful
+if [ ! -f deepsomatic_To_snv_avinput ]; then
+    echo "Error: Failed to convert VCF to ANNOVAR format"
+    exit 1
+fi
+
+echo "Running ANNOVAR annotation..."
+${ANNOVAR_DIR}/table_annovar.pl deepsomatic_To_snv_avinput \
+  -outfile deepsomatic_To_snv_avinput_snv \
+  -buildver hg38 \
+  -protocol refGene,clinvar_20240611,cosmic100coding2024 \
+  -operation g,f,f \
+  ${HUMANDB_DIR} \
+  -otherinfo
+
+# Check if ANNOVAR annotation was successful
+if [ ! -f deepsomatic_To_snv_avinput_snv.hg38_multianno.txt ]; then
+    echo "Error: ANNOVAR annotation failed"
+    exit 1
+fi
+
+echo "Filtering and extracting annotated variants..."
+awk '/exonic/ && /nonsynonymous/ && !/Benign/ || /upstream/ || /Func.refGene/' \
+  deepsomatic_To_snv_avinput_snv.hg38_multianno.txt \
+  | awk '/exonic/ || /TERT/ || /Func.refGene/' \
+  | awk '!/dist=166/' \
+  | cut -f1-16,25,26 > ${SAMPLE_ID}_annotateandfilter_deep_somatic.csv
+
+# Check if final output was created
+if [ -f ${SAMPLE_ID}_annotateandfilter_deep_somatic.csv ]; then
+    echo "Success! Annotated and filtered variants saved to: ${OUTPUT_DIR}/${SAMPLE_ID}_annotateandfilter_deep_somatic.csv"
+    echo "Number of filtered variants:"
+    wc -l ${SAMPLE_ID}_annotateandfilter_deep_somatic.csv
+else
+    echo "Warning: Final filtered output file was not created"
+    exit 1
+fi
+
+echo "Pipeline completed successfully!"
+echo "Output files:"
+echo "  - Raw VCF: ${OUTPUT_DIR}/${SAMPLE_ID}_ont_deepsomatic_output.vcf.gz"
+echo "  - PASS-filtered VCF: ${OUTPUT_DIR}/${SAMPLE_ID}_ont_deepsomatic_output.pass.vcf.gz"
+echo "  - ANNOVAR annotated: ${OUTPUT_DIR}/deepsomatic_To_snv_avinput_snv.hg38_multianno.txt"
+echo "  - Final filtered CSV: ${OUTPUT_DIR}/${SAMPLE_ID}_annotateandfilter_deep_somatic.csv"

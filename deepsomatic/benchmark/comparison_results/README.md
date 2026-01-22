@@ -1,0 +1,169 @@
+# Benchmark Comparison Results - DeepSomatic vs ClairS-TO
+
+This directory contains comprehensive comparison results for variant calling between DeepSomatic and ClairS-TO across 13 samples.
+
+## Files Overview
+
+### 1. Summary Reports
+
+#### `BENCHMARK_REPORT.md`
+- Comprehensive text report with overall statistics
+- Winner determination across multiple metrics
+- Key findings and recommendations
+
+#### `VISUAL_BENCHMARK_REPORT.txt`
+- Visual ASCII charts and graphs
+- Gene frequency analysis with visual bars
+- Venn diagrams showing gene overlap
+- VAF distribution visualizations
+- Per-sample gene comparison with visual indicators
+- Concordance distribution charts
+
+### 2. Comparison Tables
+
+#### `per_sample_comparison.csv`
+- Statistical comparison for each sample
+- Columns: sample_id, variant counts, concordance, VAF ranges, gene counts, pathogenic variants, COSMIC hits
+- Useful for statistical analysis
+
+#### `gene_comparison_simple.csv`
+- **SIMPLE GENE TABLE** - Easy to read format
+- Columns:
+  - `sample_id` - Sample identifier
+  - `deepsomatic_genes` - Genes detected by DeepSomatic
+  - `clairsto_genes` - Genes detected by ClairS-TO
+  - `common_genes` - Genes found by BOTH callers
+  - `missing_in_clairsto` - Genes DeepSomatic found but ClairS-TO missed
+  - `missing_in_deepsomatic` - Genes ClairS-TO found but DeepSomatic missed
+
+#### `variant_comparison_detailed.csv`
+- Detailed variant-level comparison
+- Includes full variant descriptions with amino acid changes, positions, and VAF
+- All variants listed with gene:p.change (chr:pos ref>alt VAF=%)
+
+### 3. Per-Sample Variant Tables
+
+Directory: `per_sample_tables/`
+
+Individual CSV files for each sample with detailed variant information:
+- **Format**: `{sample_id}_variants_detailed.csv`
+- **Columns**:
+  - Gene - Gene name
+  - Nucleotide_alteration - chr:position ref>alt
+  - Ref - Reference allele
+  - Alt - Alternate allele
+  - Func - Functional region (exonic, upstream, etc.)
+  - AAChange - Amino acid change with RefSeq IDs
+  - CLNSIG - ClinVar clinical significance
+  - COSMIC100 - COSMIC database ID
+  - GQ - Genotype quality
+  - Depth - Read depth
+  - AD - Allelic depth
+  - GT - Genotype
+  - AF - Allele frequency (VAF)
+  - Chr - Chromosome
+  - Start - Start position
+  - End - End position
+  - Variant_caller - DeepSomatic or ClairS-TO
+
+**13 sample files**: T18-020 through T23-190
+
+## Key Findings Summary
+
+### Overall Winner: **DeepSomatic** (7-0)
+
+**Metrics:**
+- Total Variants: 66 (DeepSomatic) vs 33 (ClairS-TO) - **100% more**
+- Unique Genes: 40 vs 17
+- Low VAF Detection: 5.36% vs 13.04% minimum - **7.68% better sensitivity**
+- Low VAF Variants (<30%): 15 vs 6 - **150% more**
+- Pathogenic Variants: 19 vs 18
+- COSMIC Hits: 31 vs 22
+
+### Concordance Range
+- High (60-80%): T18-022, T18-023, T19-009, T19-011
+- Medium (30-60%): T18-020, T18-021, T18-026, T23-185, T23-190
+- Low (0-30%): T18-024, T19-001, T19-003, T19-008
+
+### Notable Genes
+
+**Most Frequent:**
+1. TERT - 20 total detections (11 DS, 9 Clair)
+2. TP53 - 11 total detections (5 DS, 6 Clair)
+3. NUP98 - 5 total detections (5 DS only)
+
+**DeepSomatic-Only Genes (23 total):**
+AIF1L, ART1, CAMTA1, CREBBP, ERBB2, IGFLR1, KCNMB3, KMT2D, MARCHF9, MECOM, MRPS15, MYBL1, MYH11, NOTCH4, NTRK2, NUP98, NUTM2B, PGAP3, SGSM3, SH2D2A, SKIDA1, SMO, TENM1
+
+**ClairS-TO-Only Genes:**
+None (all ClairS-TO genes were also found by DeepSomatic)
+
+**Exception:** Only 2 variant calls were missed by DeepSomatic:
+- T19-001: TP53 variant
+- T23-190: EGFR variant
+
+## Usage Examples
+
+### 1. View Simple Gene Comparison
+```bash
+# Open in spreadsheet
+libreoffice gene_comparison_simple.csv
+
+# Or view in terminal
+column -t -s, gene_comparison_simple.csv | less -S
+```
+
+### 2. Analyze Specific Sample
+```bash
+# View detailed variants for T19-009
+cat per_sample_tables/T19-009_variants_detailed.csv | column -t -s, | less -S
+```
+
+### 3. Find Specific Genes
+```bash
+# Find all samples with TP53 mutations
+grep "TP53" gene_comparison_simple.csv
+```
+
+### 4. Load in Python
+```python
+import pandas as pd
+
+# Load simple gene table
+genes = pd.read_csv('gene_comparison_simple.csv')
+
+# Load specific sample
+sample = pd.read_csv('per_sample_tables/T19-009_variants_detailed.csv')
+
+# Filter DeepSomatic-only variants
+ds_only = sample[sample['Variant_caller'] == 'DeepSomatic']
+```
+
+## Recommendations
+
+Based on this benchmark:
+
+1. **For Maximum Sensitivity**: Use DeepSomatic
+   - Detects 2× more variants
+   - Better low VAF detection (down to 5.36%)
+   - More comprehensive gene coverage
+
+2. **For High Confidence Calls**: Use intersection of both callers
+   - 31 variants agreed by both callers
+   - Higher confidence in shared calls
+
+3. **For Validation**: Check per-sample tables
+   - Review CLNSIG (pathogenic/likely pathogenic)
+   - Check COSMIC100 database hits
+   - Verify VAF (AF column) is reasonable for sample type
+
+## Generated By
+
+Scripts located in `/home/chbope/extension/script/deepsomatic/`:
+- `benchmark_comparison.py` - Main comparison analysis
+- `create_visual_benchmark.py` - Visual report generation
+- `create_simple_gene_table.py` - Simple gene table
+- `create_variant_comparison_csv.py` - Detailed variant comparison
+- `create_per_sample_variant_tables.py` - Per-sample detailed tables
+
+Date: 2025-11-13

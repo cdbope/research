@@ -1,0 +1,53 @@
+name: crossnn
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+
+dependencies:
+  # R and R packages
+  - r-base=3.6.1
+  - r-optparse
+  - r-data.table
+  - r-dplyr
+  - r-stringr
+  - r-matrixstats
+  - r-ggplot2
+  - r-rtsne
+  - r-htmlwidgets
+  - r-r.utils
+  - r-plotly
+  - r-ggtext
+  - r-uwot
+  
+  # Bioconductor packages
+  - bioconductor-rhdf5
+  
+  # System dependencies
+  - libhdf5
+  - libhdf5-serial
+  - libcurl
+  - libssl
+  - libxml2
+  - pkg-config
+  
+  # Additional R packages that might be needed
+  - r-tidyr
+  - r-purrr
+  - r-readr
+  - r-vroom
+  - r-cpp11
+  - r-tzdb
+  
+  # Development tools
+  - gcc
+  - gfortran
+  - make
+  
+  # Python (for some R packages that have Python dependencies)
+  - python=3.7
+
+# Note: Some R packages may need to be installed manually after environment creation
+# Run: conda activate crossnn
+# Then: R -e "install.packages('package_name', repos='http://cran.r-project.org')"
+

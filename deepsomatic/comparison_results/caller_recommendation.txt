@@ -1,0 +1,20 @@
+VARIANT CALLER RECOMMENDATION
+======================================================================
+
+Best Caller: Clair3/ClairS-TO
+
+DeepSomatic Score: 39.5
+Clair3/ClairS-TO Score: 79.0
+
+Detailed Recommendation:
+
+   Clair3/ClairS-TO shows BETTER performance:
+   - Higher sensitivity (66.7% vs 42.9%)
+   - More comprehensive variant detection (14 vs 9 variants)
+   - Better coverage of cancer genes (4 vs 3)
+
+   STRENGTH: Sensitivity and comprehensive detection
+   WEAKNESS: May include more false positives requiring manual review
+
+   BEST FOR: Screening, research, ensuring no variants are missed
+        

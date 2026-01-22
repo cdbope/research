@@ -1,0 +1,15 @@
+name: nwgs_env2
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+
+dependencies:
+  - python=3.11
+  - apptainer  # modern replacement for Singularity
+  - nextflow   # optional: run nextflow directly if you prefer
+  # Add your other tools here, example:
+  # - samtools
+  # - bcftools
+  # - bedtools
+

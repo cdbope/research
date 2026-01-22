@@ -1,0 +1,9 @@
+sample_id	purity	age	sex	IDH_status	MGMT_status	TERT_status	survival_months	status
+Sample001	0.85	62	M	WT	methylated	mutant	18.5	deceased
+Sample002	0.64	55	F	WT	unmethylated	mutant	12.3	deceased
+Sample003	0.50	48	M	WT	methylated	WT	24.7	alive
+Sample004	0.86	71	F	WT	unmethylated	mutant	8.2	deceased
+Sample005	0.62	59	M	WT	methylated	mutant	15.8	deceased
+Sample006	0.84	66	F	WT	methylated	mutant	21.4	alive
+Sample007	0.52	43	M	mutant	methylated	WT	36.2	alive
+Sample008	0.91	68	M	WT	unmethylated	mutant	9.5	deceased

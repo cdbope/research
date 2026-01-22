@@ -1,0 +1,7 @@
+# Sample ID file for DeepSomatic v3 batch processing
+# One sample ID per line
+# Lines starting with # are treated as comments and ignored
+# Empty lines are also ignored
+
+T25-152
+T001
