@@ -8,12 +8,12 @@ tumors using the median neural proportion.'
 Dataset: 219 GBM samples
 
 Statistics:
-  Mean: 0.2313
-  Median (threshold): 0.2290
-  Std: 0.1485
-  Min: 0.0000
-  Max: 0.7650
+  Mean: 0.3550
+  Median (threshold): 0.3650
+  Std: 0.1079
+  Min: 0.0690
+  Max: 0.6130
 
 Classification rule:
-  High-Neural: Cortical_neurons >= 0.2290
-  Low-Neural:  Cortical_neurons < 0.2290
+  High-Neural: Cortical_neurons >= 0.3650
+  Low-Neural:  Cortical_neurons < 0.3650

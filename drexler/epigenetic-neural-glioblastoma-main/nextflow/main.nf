@@ -179,7 +179,7 @@ workflow {
     // Create channel with sample ID and corresponding bedmethyl file
     samples_ch = sample_ids_ch
         .map { sample_id ->
-            def bedmethyl = file("${params.input_dir}/${sample_id}.wf_mods.bedmethyl.gz")
+            def bedmethyl = file("${params.input_dir}/${sample_id}_merged.bedmethyl.gz")
             if (!bedmethyl.exists()) {
                 log.warn "WARNING: File not found for sample ${sample_id}: ${bedmethyl}"
                 return null

@@ -20,7 +20,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Read the data
-input_file = '/home/chbope/extension/script/drexler/epigenetic-neural-glioblastoma-main/code/DNAm_deconv/meth_atlas-master/GBM_Moss_signatures.csv'
+input_file = '/home/chbope/extension/script/drexler/epigenetic-neural-glioblastoma-main/code/DNAm_deconv/meth_atlas-master/gbm_deconv_betas_5mc_deconv_output_cortical_neurone.csv'
 df = pd.read_csv(input_file, index_col=0)
 
 # Calculate statistics
@@ -130,12 +130,12 @@ ax.spines['bottom'].set_visible(False)
 plt.tight_layout()
 
 # Save figure
-plt.savefig('GBM_Moss_neural_signature_plot.png', dpi=300, bbox_inches='tight', facecolor='white')
-plt.savefig('GBM_Moss_neural_signature_plot.pdf', bbox_inches='tight', facecolor='white')
+plt.savefig('gbm_deconv_betas_5mc_deconv_output_cortical_neurone.png', dpi=300, bbox_inches='tight', facecolor='white')
+plt.savefig('gbm_deconv_betas_5mc_deconv_output_cortical_neurone.pdf', bbox_inches='tight', facecolor='white')
 
 print(f"\nSaved plots:")
-print(f"  GBM_Moss_neural_signature_plot.png")
-print(f"  GBM_Moss_neural_signature_plot.pdf")
+print("gbm_deconv_betas_5mc_deconv_output_cortical_neurone.png")
+print(f"  gbm_deconv_betas_5mc_deconv_output_cortical_neurone.pdf")
 
 plt.close()
 

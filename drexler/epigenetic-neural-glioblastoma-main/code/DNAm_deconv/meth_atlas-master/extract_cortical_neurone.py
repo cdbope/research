@@ -35,7 +35,7 @@ def extract_cortical_neurons(input_file, output_file=None):
 
     # Set output file name
     if output_file is None:
-        output_file = 'GBM_Moss_signatures.csv'
+        output_file = 'GBM_Moss_cortical_neurone_only_signatures.csv'
 
     # Save to CSV
     result.to_csv(output_file)
